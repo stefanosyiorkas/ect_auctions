@@ -120,7 +120,6 @@ const Account = () => {
       ) : (
         <ul>
           {myAuctions.map((a) => {
-            console.log("Auction ends value:", a.endTime); // Debug log
             // Robust date parsing
             let endsDate;
             if (typeof a.endTime === "number") {
@@ -134,7 +133,7 @@ const Account = () => {
             const isExpired = endsDate < new Date();
             return (
               <li key={a.id} style={{ marginBottom: "14px" }}>
-                <strong>{a.name}</strong> – ${a.currently} <br />
+                <strong>{a.name}</strong> – ${a.currentPrice} <br />
                 Ends:{" "}
                 {isNaN(endsDate.getTime())
                   ? "Invalid date"
