@@ -1,6 +1,7 @@
 package com.sgiork.ect.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bids")
@@ -11,6 +12,7 @@ public class Bid {
     private Long id;
 
     private Double amount;
+    private LocalDateTime bidTime;
 
     @ManyToOne
     @JoinColumn(name = "auction_id")
@@ -46,5 +48,13 @@ public class Bid {
 
     public void setBidder(User bidder) {
         this.bidder = bidder;
+    }
+    
+    public LocalDateTime getBidTime() {
+        return bidTime;
+    }
+
+    public void setBidTime(LocalDateTime bidTime) {
+        this.bidTime = bidTime;
     }
 }

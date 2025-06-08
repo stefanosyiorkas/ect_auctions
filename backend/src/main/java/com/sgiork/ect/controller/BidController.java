@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/bids")
@@ -46,7 +48,19 @@ public class BidController {
         bid.setAuction(auction);
         bid.setBidder(userOpt.get());
         bidRepository.save(bid);
+        bid.setBidTime(LocalDateTime.now());
 
         return ResponseEntity.ok("Bid placed successfully");
     }
+
+    @GetMapping("/auction/{auctionId}")
+    public ResponseEntity<?> getBidsByAuction(@PathVariable Long auctionId) {
+        List<Bid> bids = bidRepository.findAll().stream()
+            .filter(b -> b.getAuction().getId().equals(auctionId))
+            .sorted((a, b) -> b.getAmount().compareTo(a.getAmount()))
+            .toList();
+
+        return ResponseEntity.ok(bids);
+    }
+
 }

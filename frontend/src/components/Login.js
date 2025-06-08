@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./Register.css"; // Reuse styling
+import "./Register.css";
 
 const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -14,24 +14,45 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:8080/api/users/login", form);
-      setMessage("Welcome, " + res.data.firstName + "!");
       localStorage.setItem("user", JSON.stringify(res.data));
-        // Redirect to home or dashboard
-        window.location.href = "/"; // Adjust as needed
-    } catch (err) {
+      localStorage.removeItem("guest"); // ensure not in guest mode
+      window.location.href = "/";
+    } catch {
       setMessage("Invalid credentials");
     }
+  };
+
+  const continueAsGuest = () => {
+    localStorage.removeItem("user");
+    localStorage.setItem("guest", "true");
+    window.location.href = "/";
   };
 
   return (
     <div className="register-container">
       <h2>Login</h2>
-      {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
-        <input name="username" placeholder="Username" onChange={handleChange} />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} />
+        <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
         <button type="submit">Login</button>
       </form>
+
+      {message && <p>{message}</p>}
+
+      <button
+        type="button"
+        onClick={continueAsGuest}
+        style={{
+          marginTop: "12px",
+          background: "transparent",
+          border: "none",
+          color: "#0a66c2",
+          textDecoration: "underline",
+          cursor: "pointer"
+        }}
+      >
+        Continue as Guest
+      </button>
     </div>
   );
 };

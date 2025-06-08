@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./Register.css"; // reuse styling
+import "./Register.css";
 
 const CreateAuction = () => {
+  const isGuest = localStorage.getItem("guest") === "true";
+  const user = JSON.parse(localStorage.getItem("user"));
   const [form, setForm] = useState({
     name: "",
     description: "",
     category: "",
     startingPrice: "",
-    startTime: "",
     endTime: ""
   });
-
   const [message, setMessage] = useState("");
-  const sellerId = 1; // mock user
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,32 +23,47 @@ const CreateAuction = () => {
     const payload = {
       ...form,
       startingPrice: parseFloat(form.startingPrice),
-      seller: { id: sellerId }
+      seller: { id: user.id }
     };
+
     try {
       await axios.post("http://localhost:8080/api/auctions", payload);
-      setMessage("Auction created successfully!");
+      setMessage("✅ Auction created successfully!");
       setForm({
-        name: "", description: "", category: "", startingPrice: "", startTime: "", endTime: ""
+        name: "",
+        description: "",
+        category: "",
+        startingPrice: "",
+        endTime: ""
       });
-    } catch (err) {
-      setMessage("Failed to create auction");
+    } catch {
+      setMessage("❌ Failed to create auction");
     }
   };
+
+  if (isGuest) {
+    return (
+      <div className="register-container">
+        <h2>Create Auction</h2>
+        <p style={{ color: "gray" }}>
+          Guests are not allowed to create auctions. Please log in first.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="register-container">
       <h2>Create Auction</h2>
-      {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="Item name" value={form.name} onChange={handleChange} required />
-        <input name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
-        <input name="category" placeholder="Category" value={form.category} onChange={handleChange} required />
-        <input name="startingPrice" placeholder="Starting Price" type="number" step="0.01" value={form.startingPrice} onChange={handleChange} required />
-        <input name="startTime" type="datetime-local" value={form.startTime} onChange={handleChange} required />
-        <input name="endTime" type="datetime-local" value={form.endTime} onChange={handleChange} required />
+        <input type="text" name="name" placeholder="Title" value={form.name} onChange={handleChange} required />
+        <input type="text" name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+        <input type="text" name="category" placeholder="Category" value={form.category} onChange={handleChange} required />
+        <input type="number" name="startingPrice" placeholder="Starting Price" value={form.startingPrice} onChange={handleChange} required step="0.01" />
+        <input type="datetime-local" name="endTime" value={form.endTime} onChange={handleChange} required />
         <button type="submit">Create</button>
       </form>
+      {message && <p>{message}</p>}
     </div>
   );
 };

@@ -12,45 +12,60 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("guest");
     window.location.href = "/login";
-  };
+  };  
 
   const loggedUser = isLoggedIn ? JSON.parse(localStorage.getItem("user")) : null;
 
   return (
     <Router>
       <div>
-        <nav style={{ textAlign: "center", margin: "20px 0" }}>
-          {!isLoggedIn && (
-            <>
-              <Link to="/register" style={{ marginRight: "20px" }}>Register</Link>
-              <Link to="/login">Login</Link>
-            </>
-          )}
+      <nav
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "12px 40px",
+          backgroundColor: "#f8f8f8",
+          borderBottom: "1px solid #ddd"
+        }}
+      >
+        <div style={{ display: "flex", gap: "20px" }}>
           {isLoggedIn && (
             <>
-              <Link to="/" style={{ marginRight: "20px" }}>Auctions</Link>
-              <Link to="/create-auction" style={{ marginRight: "20px" }}>Create Auction</Link>
-              <button
-                onClick={handleLogout}
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: "6px",
-                  backgroundColor: "#c00",
-                  color: "#fff",
-                  border: "none",
-                  cursor: "pointer",
-                  marginRight: "10px"
-                }}
-              >
-                Logout
-              </button>
-              <span style={{ fontWeight: "bold" }}>
-                Welcome, {loggedUser.firstName}
-              </span>
+              <Link to="/" style={{ textDecoration: "none", color: "#0a66c2" }}>Auctions</Link>
+              <Link to="/create-auction" style={{ textDecoration: "none", color: "#0a66c2" }}>Create Auction</Link>
             </>
           )}
-        </nav>
+          {!isLoggedIn && (
+            <>
+              <Link to="/register" style={{ textDecoration: "none", color: "#0a66c2" }}>Register</Link>
+              <Link to="/login" style={{ textDecoration: "none", color: "#0a66c2" }}>Login</Link>
+            </>
+          )}
+        </div>
+
+        {isLoggedIn && (
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <span style={{ fontWeight: "500" }}>Welcome, {loggedUser.firstName}</span>
+            <button
+              onClick={handleLogout}
+              style={{
+                padding: "6px 14px",
+                borderRadius: "6px",
+                backgroundColor: "#c00",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer"
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </nav>
+
 
         <Routes>
           <Route path="/" element={
