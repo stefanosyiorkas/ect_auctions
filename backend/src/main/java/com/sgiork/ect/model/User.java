@@ -52,12 +52,3 @@ public class User {
     public String getAfm() { return afm; }
     public void setAfm(String afm) { this.afm = afm; }
 }
-/*************  ✨ Windsurf Command ⭐  *************/
-/*******  0dde6814-7108-41f1-83df-0855e86a33c9  *******//**
-
- * Sets the email address for the user.
- *
-
- * @param email the email address to set
- */
-

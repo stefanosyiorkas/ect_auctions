@@ -14,10 +14,16 @@ const AuctionList = () => {
       .catch((err) => console.error("Failed to fetch auctions", err));
   }, []);
 
-  const filteredAuctions = auctions.filter((auction) =>
-    auction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    auction.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredAuctions = auctions
+    .filter((auction) => {
+      const end = new Date(auction.endTime);
+      return end > new Date();
+    })
+    .filter(
+      (auction) =>
+        auction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        auction.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div className="auction-list-container">

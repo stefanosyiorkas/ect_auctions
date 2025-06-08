@@ -99,6 +99,10 @@ const CreateAuction = () => {
         <button type="submit">Create</button>
       </form>
       {message && <p>{message}</p>}
+      <p style={{ color: "red", marginTop: "20px" }}>
+        This file is now replaced by AuctionForm.js. Please use AuctionForm.js
+        for auction creation.
+      </p>
     </div>
   );
 };

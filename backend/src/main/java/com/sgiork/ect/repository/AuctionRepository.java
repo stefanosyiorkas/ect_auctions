@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
-    List<Auction> findBySellerId(Long sellerId);  // ✅ για My Auctions
+    List<Auction> findBySellerId(Long sellerId);
 }

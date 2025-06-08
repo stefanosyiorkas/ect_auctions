@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-ro
 import Register from "./components/Register";
 import Login from "./components/Login";
 import AuctionList from "./components/AuctionList";
-import CreateAuction from "./components/CreateAuction";
+import AuctionForm from "./components/AuctionForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuctionDetails from "./components/AuctionDetails";
 import Account from "./components/Account";
@@ -107,14 +107,7 @@ function App() {
           />
           <Route path="/register" element={<Register onAuth={handleAuth} />} />
           <Route path="/login" element={<Login onAuth={handleAuth} />} />
-          <Route
-            path="/create-auction"
-            element={
-              <ProtectedRoute>
-                <CreateAuction />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/create-auction" element={<AuctionForm />} />
           <Route path="*" element={<Navigate to="/" />} />
           <Route
             path="/auction/:id"
