@@ -44,3 +44,15 @@
   margin: 6px 0;
   font-size: 14px;
 }
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 0 auto 24px auto;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+

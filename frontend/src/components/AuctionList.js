@@ -5,6 +5,7 @@ import "./AuctionList.css";
 
 const AuctionList = () => {
   const [auctions, setAuctions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     axios.get("http://localhost:8080/api/auctions")
@@ -12,14 +13,28 @@ const AuctionList = () => {
       .catch(err => console.error("Failed to fetch auctions", err));
   }, []);
 
+  const filteredAuctions = auctions.filter((auction) =>
+    auction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    auction.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="auction-list-container">
       <h2>Active Auctions</h2>
-      {auctions.length === 0 ? (
-        <p>No auctions available.</p>
+
+      <input
+        type="text"
+        placeholder="Search by title or category..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
+
+      {filteredAuctions.length === 0 ? (
+        <p>No matching auctions.</p>
       ) : (
         <div className="auction-grid">
-          {auctions.map(auction => (
+          {filteredAuctions.map((auction) => (
             <Link to={`/auction/${auction.id}`} key={auction.id} className="auction-card">
               <h3>{auction.name}</h3>
               <p><strong>Category:</strong> {auction.category}</p>
