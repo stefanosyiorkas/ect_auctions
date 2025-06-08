@@ -17,6 +17,9 @@ public class User {
     private String lastName;
     private String email;
     private String phone;
+    private String address;
+    private String location;
+    private String afm;
 
     // === Getters & Setters ===
 
