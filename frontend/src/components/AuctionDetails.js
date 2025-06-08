@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import "./Register.css";
 
 const AuctionDetails = () => {
@@ -14,8 +14,8 @@ const AuctionDetails = () => {
 
   const fetchAuction = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/auctions");
-      const found = res.data.find(item => item.id.toString() === id);
+      const res = await api.get("/auctions");
+      const found = res.data.find((item) => item.id.toString() === id);
       setAuction(found);
     } catch {
       setMessage("Failed to load auction");
@@ -24,7 +24,7 @@ const AuctionDetails = () => {
 
   const fetchBids = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/bids/auction/${id}`);
+      const res = await api.get(`/bids/auction/${id}`);
       setBids(res.data);
     } catch {
       setBids([]);
@@ -42,11 +42,11 @@ const AuctionDetails = () => {
     const payload = {
       amount: parseFloat(bidAmount),
       auction: { id: auction.id },
-      bidder: { id: user.id }
+      bidder: { id: user.id },
     };
 
     try {
-      await axios.post("http://localhost:8080/api/bids", payload);
+      await api.post("/bids", payload);
       setMessage("✅ Bid placed successfully!");
       setBidAmount("");
       fetchAuction();
@@ -61,10 +61,18 @@ const AuctionDetails = () => {
   return (
     <div className="register-container">
       <h2>{auction.name}</h2>
-      <p><strong>Description:</strong> {auction.description}</p>
-      <p><strong>Category:</strong> {auction.category}</p>
-      <p><strong>Current Price:</strong> ${auction.currentPrice}</p>
-      <p><strong>Ends:</strong> {new Date(auction.endTime).toLocaleString()}</p>
+      <p>
+        <strong>Description:</strong> {auction.description}
+      </p>
+      <p>
+        <strong>Category:</strong> {auction.category}
+      </p>
+      <p>
+        <strong>Current Price:</strong> ${auction.currentPrice}
+      </p>
+      <p>
+        <strong>Ends:</strong> {new Date(auction.endTime).toLocaleString()}
+      </p>
 
       {!isGuest ? (
         <form onSubmit={handleBid}>
@@ -93,7 +101,9 @@ const AuctionDetails = () => {
           <ul>
             {bids.map((bid) => (
               <li key={bid.id}>
-                💰 ${bid.amount.toFixed(2)} – <strong>{bid.bidder.username}</strong><br />
+                💰 ${bid.amount.toFixed(2)} –{" "}
+                <strong>{bid.bidder.username}</strong>
+                <br />
                 🕒 {new Date(bid.bidTime).toLocaleString()}
               </li>
             ))}

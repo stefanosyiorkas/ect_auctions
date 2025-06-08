@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../api";
 import "./Register.css";
 
 const Login = () => {
@@ -13,7 +13,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/api/users/login", form);
+      const res = await api.post("/users/login", form);
       localStorage.setItem("user", JSON.stringify(res.data));
       localStorage.removeItem("guest"); // ensure not in guest mode
       window.location.href = "/";
@@ -32,8 +32,20 @@ const Login = () => {
     <div className="register-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+        />
         <button type="submit">Login</button>
       </form>
 
@@ -48,7 +60,7 @@ const Login = () => {
           border: "none",
           color: "#0a66c2",
           textDecoration: "underline",
-          cursor: "pointer"
+          cursor: "pointer",
         }}
       >
         Continue as Guest

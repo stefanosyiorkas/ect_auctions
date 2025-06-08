@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../api";
 import "./Register.css";
 
 const CreateAuction = () => {
@@ -10,7 +10,7 @@ const CreateAuction = () => {
     description: "",
     category: "",
     startingPrice: "",
-    endTime: ""
+    endTime: "",
   });
   const [message, setMessage] = useState("");
 
@@ -23,18 +23,18 @@ const CreateAuction = () => {
     const payload = {
       ...form,
       startingPrice: parseFloat(form.startingPrice),
-      seller: { id: user.id }
+      seller: { id: user.id },
     };
 
     try {
-      await axios.post("http://localhost:8080/api/auctions", payload);
+      await api.post("/auctions", payload);
       setMessage("✅ Auction created successfully!");
       setForm({
         name: "",
         description: "",
         category: "",
         startingPrice: "",
-        endTime: ""
+        endTime: "",
       });
     } catch {
       setMessage("❌ Failed to create auction");
@@ -56,11 +56,46 @@ const CreateAuction = () => {
     <div className="register-container">
       <h2>Create Auction</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Title" value={form.name} onChange={handleChange} required />
-        <input type="text" name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
-        <input type="text" name="category" placeholder="Category" value={form.category} onChange={handleChange} required />
-        <input type="number" name="startingPrice" placeholder="Starting Price" value={form.startingPrice} onChange={handleChange} required step="0.01" />
-        <input type="datetime-local" name="endTime" value={form.endTime} onChange={handleChange} required />
+        <input
+          type="text"
+          name="name"
+          placeholder="Title"
+          value={form.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={form.category}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="startingPrice"
+          placeholder="Starting Price"
+          value={form.startingPrice}
+          onChange={handleChange}
+          required
+          step="0.01"
+        />
+        <input
+          type="datetime-local"
+          name="endTime"
+          value={form.endTime}
+          onChange={handleChange}
+          required
+        />
         <button type="submit">Create</button>
       </form>
       {message && <p>{message}</p>}

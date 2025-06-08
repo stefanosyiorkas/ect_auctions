@@ -20,7 +20,7 @@ services:
     container_name: spring_boot_app
     restart: always
     ports:
-      - "8080:8080"
+      - "8443:8443"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/auction_db"
       SPRING_DATASOURCE_USERNAME: user

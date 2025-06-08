@@ -8,6 +8,7 @@ COPY pom.xml .
 RUN ./mvnw dependency:go-offline
 
 COPY src ./src
+COPY src/main/resources/keystore.p12 /app/keystore.p12
 
 RUN ./mvnw package -DskipTests
 

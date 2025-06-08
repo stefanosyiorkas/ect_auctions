@@ -8,9 +8,10 @@ const AuctionList = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/auctions")
-      .then(res => setAuctions(res.data))
-      .catch(err => console.error("Failed to fetch auctions", err));
+    axios
+      .get("https://localhost:8443/api/auctions")
+      .then((res) => setAuctions(res.data))
+      .catch((err) => console.error("Failed to fetch auctions", err));
   }, []);
 
   const filteredAuctions = auctions.filter((auction) =>
