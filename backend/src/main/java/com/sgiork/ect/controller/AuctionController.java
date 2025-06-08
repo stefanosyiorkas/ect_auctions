@@ -27,4 +27,10 @@ public class AuctionController {
     public List<Auction> listAuctions() {
         return auctionRepository.findAll();
     }
+
+    @GetMapping("/user/{userId}")
+    public List<Auction> getAuctionsByUser(@PathVariable Long userId) {
+        return auctionRepository.findBySellerId(userId);
+    }
+
 }

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
 import "./Register.css";
 
-const Login = () => {
+const Login = ({ onAuth }) => {
   const [form, setForm] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,7 +18,8 @@ const Login = () => {
       const res = await api.post("/users/login", form);
       localStorage.setItem("user", JSON.stringify(res.data));
       localStorage.removeItem("guest"); // ensure not in guest mode
-      window.location.href = "/";
+      if (onAuth) onAuth(res.data);
+      navigate("/");
     } catch {
       setMessage("Invalid credentials");
     }
@@ -25,7 +28,7 @@ const Login = () => {
   const continueAsGuest = () => {
     localStorage.removeItem("user");
     localStorage.setItem("guest", "true");
-    window.location.href = "/";
+    navigate("/");
   };
 
   return (

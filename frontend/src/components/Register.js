@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
-const Register = () => {
+const Register = ({ onAuth }) => {
   const [form, setForm] = useState({
     username: "", password: "", confirmPassword: "",
     firstName: "", lastName: "", email: "", phone: "",
     address: "", location: "", afm: ""
   });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,11 +37,20 @@ const Register = () => {
 
     try {
       await axios.post("https://localhost:8443/api/users/register", payload);
-      setMessage("✅ Registered successfully! You can now log in.");
-      setForm({ username: "", password: "", confirmPassword: "", firstName: "", lastName: "", email: "", phone: "", address: "", location: "", afm: "" });
+      // Auto-login after successful registration
+      const loginRes = await axios.post("https://localhost:8443/api/users/login", {
+        username: form.username,
+        password: form.password
+      });
+      localStorage.setItem("user", JSON.stringify(loginRes.data));
+      localStorage.removeItem("guest");
+      if (onAuth) onAuth(loginRes.data);
+      navigate("/");
     } catch (err) {
       if (err.response?.status === 400) {
         setMessage("❌ Username already exists");
+      } else if (err.response?.status === 401) {
+        setMessage("❌ Login failed after registration");
       } else {
         setMessage("❌ Registration failed");
       }

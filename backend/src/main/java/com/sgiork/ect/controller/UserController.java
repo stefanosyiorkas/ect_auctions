@@ -38,6 +38,24 @@ public class UserController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        User user = userOpt.get();
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setEmail(updatedUser.getEmail());
+        user.setPhone(updatedUser.getPhone());
+        user.setAddress(updatedUser.getAddress());
+        user.setLocation(updatedUser.getLocation());
+        user.setAfm(updatedUser.getAfm());
+
+        return ResponseEntity.ok(userRepository.save(user));
+    }
+
 }
 
 
