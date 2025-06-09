@@ -47,8 +47,8 @@ public class BidController {
 
         bid.setAuction(auction);
         bid.setBidder(userOpt.get());
-        bidRepository.save(bid);
         bid.setBidTime(LocalDateTime.now());
+        bidRepository.save(bid);
 
         return ResponseEntity.ok("Bid placed successfully");
     }
