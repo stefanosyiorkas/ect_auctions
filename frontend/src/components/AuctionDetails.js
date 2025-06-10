@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api";
+import { toast } from "react-toastify";
 import "./Register.css";
 
 const AuctionDetails = () => {
   const { id } = useParams();
   const [auction, setAuction] = useState(null);
   const [bidAmount, setBidAmount] = useState("");
-  const [message, setMessage] = useState("");
   const [bids, setBids] = useState([]);
 
   const isGuest = localStorage.getItem("guest") === "true";
@@ -18,7 +18,7 @@ const AuctionDetails = () => {
       const found = res.data.find((item) => item.id.toString() === id);
       setAuction(found);
     } catch {
-      setMessage("Failed to load auction");
+      toast.error("Failed to load auction");
     }
   };
 
@@ -47,12 +47,12 @@ const AuctionDetails = () => {
 
     try {
       await api.post("/bids", payload);
-      setMessage("✅ Bid placed successfully!");
+      toast.success("Bid placed successfully!");
       setBidAmount("");
       fetchAuction();
       fetchBids();
     } catch (err) {
-      setMessage("❌ " + (err.response?.data || "Failed to submit bid"));
+      toast.error(err.response?.data || "Failed to submit bid");
     }
   };
 
@@ -93,7 +93,6 @@ const AuctionDetails = () => {
         </p>
       )}
 
-      {message && <p>{message}</p>}
 
       {bids.length > 0 && (
         <div style={{ marginTop: "20px" }}>
