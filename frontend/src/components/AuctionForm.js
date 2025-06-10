@@ -52,7 +52,7 @@ const AuctionForm = () => {
 
   return (
     <div className="register-container">
-      <h2>Manage Your Auction</h2>
+      <h2>Create Auction</h2>
       <form onSubmit={handleSubmit}>
         <input name="name" placeholder="Item Name" title="Ονομασία του αντικειμένου" required value={form.name} onChange={handleChange} />
         <input name="category" placeholder="Category" title="Κατηγορία στην οποία ανήκει το αντικείμενο" required value={form.category} onChange={handleChange} />
