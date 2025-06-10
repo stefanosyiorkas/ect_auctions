@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import "./Register.css";
 
 const Account = () => {
@@ -17,7 +18,19 @@ const Account = () => {
       const res = await axios.get(
         `https://localhost:8443/api/auctions/user/${user.id}`
       );
-      setMyAuctions(res.data);
+      const auctions = await Promise.all(
+        res.data.map(async (a) => {
+          try {
+            const bidsRes = await axios.get(
+              `https://localhost:8443/api/bids/auction/${a.id}`
+            );
+            return { ...a, bidCount: bidsRes.data.length };
+          } catch {
+            return { ...a, bidCount: 0 };
+          }
+        })
+      );
+      setMyAuctions(auctions);
     } catch {
       setMyAuctions([]);
     }
@@ -133,11 +146,17 @@ const Account = () => {
             const isExpired = endsDate < new Date();
             return (
               <li key={a.id} style={{ marginBottom: "14px" }}>
-                <strong>{a.name}</strong> – ${a.currentPrice} <br />
-                Ends:{" "}
-                {isNaN(endsDate.getTime())
-                  ? "Invalid date"
-                  : endsDate.toLocaleString()}{" "}
+                <Link
+                  to={`/auction/${a.id}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <strong>{a.name}</strong> – ${a.currentPrice} ({a.bidCount} bids)
+                  <br />
+                  Ends:{" "}
+                  {isNaN(endsDate.getTime())
+                    ? "Invalid date"
+                    : endsDate.toLocaleString()}
+                </Link>
                 <br />
                 <button
                   onClick={() => deleteAuction(a.id)}
