@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import api from "../api";
+import { toast } from "react-toastify";
 import "./Register.css";
 
 const CreateAuction = () => {
@@ -12,7 +13,6 @@ const CreateAuction = () => {
     startingPrice: "",
     endTime: "",
   });
-  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,7 +28,7 @@ const CreateAuction = () => {
 
     try {
       await api.post("/auctions", payload);
-      setMessage("✅ Auction created successfully!");
+      toast.success("Auction created successfully!");
       setForm({
         name: "",
         description: "",
@@ -37,7 +37,7 @@ const CreateAuction = () => {
         endTime: "",
       });
     } catch {
-      setMessage("❌ Failed to create auction");
+      toast.error("Failed to create auction");
     }
   };
 
@@ -98,7 +98,6 @@ const CreateAuction = () => {
         />
         <button type="submit">Create</button>
       </form>
-      {message && <p>{message}</p>}
       <p style={{ color: "red", marginTop: "20px" }}>
         This file is now replaced by AuctionForm.js. Please use AuctionForm.js
         for auction creation.

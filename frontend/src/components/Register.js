@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./Register.css";
 
 const Register = ({ onAuth }) => {
@@ -9,7 +10,6 @@ const Register = ({ onAuth }) => {
     firstName: "", lastName: "", email: "", phone: "",
     address: "", location: "", afm: ""
   });
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = e => {
@@ -19,7 +19,7 @@ const Register = ({ onAuth }) => {
   const handleSubmit = async e => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
-      setMessage("❌ Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -46,13 +46,14 @@ const Register = ({ onAuth }) => {
       localStorage.removeItem("guest");
       if (onAuth) onAuth(loginRes.data);
       navigate("/");
+      toast.success("Registered successfully");
     } catch (err) {
       if (err.response?.status === 400) {
-        setMessage("❌ Username already exists");
+        toast.error("Username already exists");
       } else if (err.response?.status === 401) {
-        setMessage("❌ Login failed after registration");
+        toast.error("Login failed after registration");
       } else {
-        setMessage("❌ Registration failed");
+        toast.error("Registration failed");
       }
     }
   };
@@ -76,7 +77,6 @@ const Register = ({ onAuth }) => {
 
         <button type="submit">Register</button>
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 };

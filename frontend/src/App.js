@@ -7,6 +7,8 @@ import AuctionForm from "./components/AuctionForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuctionDetails from "./components/AuctionDetails";
 import Account from "./components/Account";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("user"));
@@ -126,6 +128,7 @@ function App() {
             }
           />
         </Routes>
+        <ToastContainer position="top-center" />
       </div>
     </Router>
   );

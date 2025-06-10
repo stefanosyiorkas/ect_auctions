@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import { toast } from "react-toastify";
 import "./Register.css";
 
 const Login = ({ onAuth }) => {
   const [form, setForm] = useState({ username: "", password: "" });
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,8 +20,9 @@ const Login = ({ onAuth }) => {
       localStorage.removeItem("guest"); // ensure not in guest mode
       if (onAuth) onAuth(res.data);
       navigate("/");
+      toast.success("Logged in successfully");
     } catch {
-      setMessage("Invalid credentials");
+      toast.error("Invalid credentials");
     }
   };
 
@@ -51,8 +52,6 @@ const Login = ({ onAuth }) => {
         />
         <button type="submit">Login</button>
       </form>
-
-      {message && <p>{message}</p>}
 
       <button
         type="button"
