@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./Register.css";
 
 const Account = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [form, setForm] = useState({ ...user });
-  const [message, setMessage] = useState("");
   const [myAuctions, setMyAuctions] = useState([]);
 
   const handleChange = (e) => {
@@ -48,9 +48,9 @@ const Account = () => {
         form
       );
       localStorage.setItem("user", JSON.stringify(res.data));
-      setMessage("✅ Profile updated successfully");
+      toast.success("Profile updated successfully");
     } catch {
-      setMessage("❌ Failed to update profile");
+      toast.error("Failed to update profile");
     }
   };
 
@@ -60,9 +60,9 @@ const Account = () => {
     try {
       await axios.delete(`https://localhost:8443/api/auctions/${auctionId}`);
       setMyAuctions((prev) => prev.filter((a) => a.id !== auctionId));
-      setMessage("✅ Auction deleted");
+      toast.success("Auction deleted");
     } catch {
-      setMessage("❌ Cannot delete auction (it may have started or has bids)");
+      toast.error("Cannot delete auction (it may have started or has bids)");
     }
   };
 
@@ -124,8 +124,6 @@ const Account = () => {
         />
         <button type="submit">Save Changes</button>
       </form>
-
-      {message && <p>{message}</p>}
 
       <h3 style={{ marginTop: "2rem" }}>My Auctions</h3>
       {myAuctions.length === 0 ? (

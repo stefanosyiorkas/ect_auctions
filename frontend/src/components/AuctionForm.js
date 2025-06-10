@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import "./Register.css";
 
 const AuctionForm = () => {
@@ -15,7 +16,6 @@ const AuctionForm = () => {
     country: "",
     description: ""
   });
-  const [message, setMessage] = useState("");
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,11 +27,11 @@ const AuctionForm = () => {
     const start = new Date(form.startTime);
     const end = new Date(form.endTime);
     if (start < now) {
-      setMessage("❌ Start time cannot be in the past.");
+      toast.error("Start time cannot be in the past.");
       return;
     }
     if (end <= start) {
-      setMessage("❌ End time must be after start time.");
+      toast.error("End time must be after start time.");
       return;
     }
     const payload = {
@@ -43,10 +43,10 @@ const AuctionForm = () => {
 
     try {
       await axios.post("https://localhost:8443/api/auctions", payload);
-      setMessage("✅ Auction created successfully!");
+      toast.success("Auction created successfully!");
       setForm({ name: "", category: "", startingPrice: "", currentPrice: "", startTime: "", endTime: "", location: "", country: "", description: "" });
     } catch {
-      setMessage("❌ Failed to create auction");
+      toast.error("Failed to create auction");
     }
   };
 
@@ -66,7 +66,6 @@ const AuctionForm = () => {
 
         <button type="submit">Submit Auction</button>
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 };
