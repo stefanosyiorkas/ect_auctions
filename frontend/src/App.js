@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AuctionDetails from "./components/AuctionDetails";
 import Account from "./components/Account";
 import Messages from "./components/Messages";
+import MessageBell from "./components/MessageBell";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from "./api";
@@ -79,7 +80,7 @@ function App() {
                   Create Auction
                 </Link>
                 <Link to="/messages" style={linkStyle}>
-                  Messages {unread > 0 && `(${unread})`}
+                  Messages
                 </Link>
                 <Link to="/account" style={linkStyle}>
                   My Account
@@ -109,6 +110,7 @@ function App() {
               <span style={{ fontWeight: "500" }}>
                 Welcome, {loggedUser.firstName}
               </span>
+              <MessageBell userId={loggedUser.id} unread={unread} refreshUnread={refreshUnread} />
               <button
                 onClick={handleLogout}
                 style={{
@@ -131,7 +133,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <AuctionList unread={unread} />
+                <AuctionList />
               </ProtectedRoute>
             }
           />
