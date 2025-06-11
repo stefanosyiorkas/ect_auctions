@@ -1,11 +1,15 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
   const user = localStorage.getItem("user");
   const isGuest = localStorage.getItem("guest") === "true";
+  const location = useLocation();
 
-  return user || isGuest ? children : <Navigate to="/login" replace />;
+  if (user || isGuest) {
+    return children;
+  }
+  return <Navigate to="/login" replace state={{ from: location }} />;
 };
 
 
