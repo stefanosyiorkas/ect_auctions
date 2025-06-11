@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import AuctionList from "./components/AuctionList";
@@ -13,27 +19,41 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from "./api";
 
+const RedirectHome = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("/", { replace: true });
+  }, [navigate]);
+  return null;
+};
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("user"));
   const [loggedUser, setLoggedUser] = useState(
-    localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
+    localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null,
   );
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
     if (loggedUser) {
-      api.get(`/messages/inbox/${loggedUser.id}`).then(res => {
-        const count = res.data.filter(m => !m.readFlag).length;
-        setUnread(count);
-      }).catch(() => setUnread(0));
+      api
+        .get(`/messages/inbox/${loggedUser.id}`)
+        .then((res) => {
+          const count = res.data.filter((m) => !m.readFlag).length;
+          setUnread(count);
+        })
+        .catch(() => setUnread(0));
     }
   }, [loggedUser]);
 
   const refreshUnread = () => {
     if (loggedUser) {
-      api.get(`/messages/inbox/${loggedUser.id}`)
-        .then(res => {
-          const count = res.data.filter(m => !m.readFlag).length;
+      api
+        .get(`/messages/inbox/${loggedUser.id}`)
+        .then((res) => {
+          const count = res.data.filter((m) => !m.readFlag).length;
           setUnread(count);
         })
         .catch(() => setUnread(0));
@@ -110,7 +130,11 @@ function App() {
               <span style={{ fontWeight: "500" }}>
                 Welcome, {loggedUser.firstName}
               </span>
-              <MessageBell userId={loggedUser.id} unread={unread} refreshUnread={refreshUnread} />
+              <MessageBell
+                userId={loggedUser.id}
+                unread={unread}
+                refreshUnread={refreshUnread}
+              />
               <button
                 onClick={handleLogout}
                 style={{
@@ -140,7 +164,7 @@ function App() {
           <Route path="/register" element={<Register onAuth={handleAuth} />} />
           <Route path="/login" element={<Login onAuth={handleAuth} />} />
           <Route path="/create-auction" element={<AuctionForm />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<RedirectHome />} />
           <Route
             path="/auction/:id"
             element={
