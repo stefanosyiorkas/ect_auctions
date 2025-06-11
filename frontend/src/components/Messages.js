@@ -8,6 +8,7 @@ const Messages = ({ refreshUnread }) => {
   const [sent, setSent] = useState([]);
   const [activeTab, setActiveTab] = useState("inbox");
   const [form, setForm] = useState({ receiverId: "", content: "" });
+  const unreadCount = inbox.filter((m) => !m.readFlag).length;
 
   const fetchInbox = async () => {
     try {
@@ -103,7 +104,7 @@ const Messages = ({ refreshUnread }) => {
           onClick={() => setActiveTab("inbox")}
           style={{ marginRight: 10 }}
         >
-          Inbox {inbox.some((m) => !m.readFlag) && "*"}
+          Inbox {unreadCount > 0 && `(${unreadCount})`}
         </button>
         <button onClick={() => setActiveTab("sent")}>Sent</button>
       </div>
