@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
@@ -7,26 +7,52 @@ import AuctionForm from "./components/AuctionForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuctionDetails from "./components/AuctionDetails";
 import Account from "./components/Account";
+import Messages from "./components/Messages";
+import MessageBell from "./components/MessageBell";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import api from "./api";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("user"));
   const [loggedUser, setLoggedUser] = useState(
     localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
   );
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    if (loggedUser) {
+      api.get(`/messages/inbox/${loggedUser.id}`).then(res => {
+        const count = res.data.filter(m => !m.readFlag).length;
+        setUnread(count);
+      }).catch(() => setUnread(0));
+    }
+  }, [loggedUser]);
+
+  const refreshUnread = () => {
+    if (loggedUser) {
+      api.get(`/messages/inbox/${loggedUser.id}`)
+        .then(res => {
+          const count = res.data.filter(m => !m.readFlag).length;
+          setUnread(count);
+        })
+        .catch(() => setUnread(0));
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("guest");
     setIsLoggedIn(false);
     setLoggedUser(null);
+    setUnread(0);
     window.location.href = "/login";
   };
 
   const handleAuth = (userObj) => {
     setIsLoggedIn(true);
     setLoggedUser(userObj);
+    refreshUnread();
   };
 
   const linkStyle = { textDecoration: "none", color: "#0a66c2" };
@@ -52,6 +78,9 @@ function App() {
                 </Link>
                 <Link to="/create-auction" style={linkStyle}>
                   Create Auction
+                </Link>
+                <Link to="/messages" style={linkStyle}>
+                  Messages
                 </Link>
                 <Link to="/account" style={linkStyle}>
                   My Account
@@ -81,6 +110,7 @@ function App() {
               <span style={{ fontWeight: "500" }}>
                 Welcome, {loggedUser.firstName}
               </span>
+              <MessageBell userId={loggedUser.id} unread={unread} refreshUnread={refreshUnread} />
               <button
                 onClick={handleLogout}
                 style={{
@@ -116,6 +146,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AuctionDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <Messages refreshUnread={refreshUnread} />
               </ProtectedRoute>
             }
           />

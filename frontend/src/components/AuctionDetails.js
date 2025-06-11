@@ -9,6 +9,8 @@ const AuctionDetails = () => {
   const [auction, setAuction] = useState(null);
   const [bidAmount, setBidAmount] = useState("");
   const [bids, setBids] = useState([]);
+  const [message, setMessage] = useState("");
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const isGuest = localStorage.getItem("guest") === "true";
 
@@ -25,7 +27,8 @@ const AuctionDetails = () => {
   const fetchBids = async () => {
     try {
       const res = await api.get(`/bids/auction/${id}`);
-      setBids(res.data);
+      const sorted = res.data.sort((a, b) => b.amount - a.amount);
+      setBids(sorted);
     } catch {
       setBids([]);
     }
@@ -36,12 +39,14 @@ const AuctionDetails = () => {
     fetchBids();
   }, [id]);
 
+  const isEnded = auction ? new Date(auction.endTime) < new Date() : false;
+  const winnerId = bids.length > 0 ? bids[0].bidder.id : null;
+
   const handleBid = async (e) => {
     e.preventDefault();
     if (!window.confirm(`Place bid of $${parseFloat(bidAmount).toFixed(2)}?`)) {
       return;
     }
-    const user = JSON.parse(localStorage.getItem("user"));
     const payload = {
       amount: parseFloat(bidAmount),
       auction: { id: auction.id },
@@ -56,6 +61,21 @@ const AuctionDetails = () => {
       fetchBids();
     } catch (err) {
       toast.error(err.response?.data || "Failed to submit bid");
+    }
+  };
+
+  const sendSellerMessage = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post("/messages", {
+        sender: { id: user.id },
+        receiver: { id: auction.seller.id },
+        content: message,
+      });
+      toast.success("Message sent");
+      setMessage("");
+    } catch {
+      toast.error("Failed to send message");
     }
   };
 
@@ -111,6 +131,20 @@ const AuctionDetails = () => {
             ))}
           </ul>
         </div>
+      )}
+
+      {isEnded && winnerId === user?.id && (
+        <form onSubmit={sendSellerMessage} style={{ marginTop: 20 }}>
+          <h3>Contact Seller</h3>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={3}
+            required
+            style={{ width: "100%", marginBottom: 8 }}
+          />
+          <button type="submit">Send Message</button>
+        </form>
       )}
     </div>
   );
