@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "./AuctionList.css";
 
-const AuctionList = () => {
+const AuctionList = ({ unread }) => {
   const [auctions, setAuctions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -28,6 +28,11 @@ const AuctionList = () => {
   return (
     <div className="auction-list-container">
       <h2>Active Auctions</h2>
+      {unread > 0 && (
+        <p style={{ color: "crimson" }}>
+          You have {unread} new message{unread > 1 ? 's' : ''}. Check the Messages tab.
+        </p>
+      )}
 
       <input
         type="text"

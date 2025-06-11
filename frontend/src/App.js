@@ -133,7 +133,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <AuctionList />
+                <AuctionList unread={unread} />
               </ProtectedRoute>
             }
           />
