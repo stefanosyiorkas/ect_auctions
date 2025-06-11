@@ -38,6 +38,9 @@ const AuctionDetails = () => {
 
   const handleBid = async (e) => {
     e.preventDefault();
+    if (!window.confirm(`Place bid of $${parseFloat(bidAmount).toFixed(2)}?`)) {
+      return;
+    }
     const user = JSON.parse(localStorage.getItem("user"));
     const payload = {
       amount: parseFloat(bidAmount),
